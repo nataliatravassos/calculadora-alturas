@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Alturas — Trigonometria</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a33;
+      --muted: #8aa0ffcc;
+      --text: #e9edff;
+      --accent: #9ecbff;
+      --accent2: #b7ffea;
+      --error: #ffb4b4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 10% -10%, #1a2455 0%, transparent 60%), 
+                  radial-gradient(1000px 600px at 100% 0%, #163a5e 0%, transparent 60%), 
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 860px; margin: 24px auto; padding: 16px;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px; padding: 18px 16px; backdrop-filter: blur(6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    h1, h2 {
+      margin: 8px 0 12px 0;
+      letter-spacing: 0.2px;
+    }
+    h1 { font-size: clamp(1.4rem, 2.2vw + 1rem, 2rem); }
+    h2 { font-size: clamp(1.1rem, 1.8vw + 0.8rem, 1.6rem); color: var(--accent); }
+    p.muted { color: var(--muted); margin-top: 4px; }
+    .row {
+      display: grid; gap: 12px;
+      grid-template-columns: repeat(12, 1fr);
+      align-items: end;
+    }
+    .col-12 { grid-column: span 12; }
+    .col-6  { grid-column: span 12; }
+    .col-4  { grid-column: span 12; }
+    .col-3  { grid-column: span 12; }
+    @media (min-width: 680px) {
+      .col-6  { grid-column: span 6; }
+      .col-4  { grid-column: span 4; }
+      .col-3  { grid-column: span 3; }
+    }
+    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    input, select, button {
+      width: 100%; padding: 12px 10px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.13); background: #0e1630; color: var(--text);
+      outline: none;
+    }
+    input::placeholder { color: #9eb0ff80; }
+    .seg {
+      display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap;
+      background: #0e1630; padding: 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.13);
+    }
+    .seg label { font-weight: 500; margin: 0; }
+    .seg input[type="radio"] { width: auto; }
+    .help {
+      font-size: 0.95rem; color: var(--muted);
+    }
+    .hint {
+      font-size: 0.95rem; color: #cfe1ff; background: rgba(158,203,255,0.08);
+      padding: 8px 10px; border-radius: 10px; border: 1px dashed rgba(255,255,255,0.18);
+    }
+    .btn {
+      cursor: pointer; font-weight: 700; letter-spacing: 0.2px;
+      transition: transform 0.04s ease, box-shadow 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: linear-gradient(90deg, #3b82f6, #22d3ee); border: none; color: #041225; }
+    .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.2); }
+    .two-col {
+      display: grid; gap: 18px; grid-template-columns: 1fr; 
+    }
+    @media (min-width: 900px) { .two-col { grid-template-columns: 1.1fr 0.9fr; } }
+    .kpi {
+      display:flex; gap: 16px; align-items: baseline; flex-wrap: wrap;
+      background: #0e1630; border: 1px solid rgba(255,255,255,0.12);
+      padding: 12px 14px; border-radius: 14px;
+    }
+    .kpi .val { font-size: clamp(1.4rem, 1.2vw + 1.1rem, 2.2rem); font-weight: 800; color: var(--accent2); }
+    .kpi .lbl { color: var(--muted); font-weight: 600; }
+    .err { color: var(--error); font-weight: 600; }
+    .footer { margin-top: 14px; font-size: 0.92rem; color: #a9b6ffcc; }
+    .formula {
+      font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+      background: #0b1330; padding: 8px 10px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Calculadora de Alturas — Trigonometria</h1>
+      <p class="muted">Escolha o método e informe as medidas. O app calcula a altura total <strong>h</strong> do objeto a partir da altura do instrumento <strong>h₁</strong> (olho/teodolito).</p>
+
+      <div class="two-col">
+        <div>
+          <h2>1) Escolha o método</h2>
+          <div class="seg" role="radiogroup" aria-label="Selecionar método">
+            <label><input type="radio" name="metodo" value="distancia" checked /> Distância conhecida</label>
+            <label><input type="radio" name="metodo" value="doisangulos" /> Dois ângulos</label>
+          </div>
+          <p class="help">• <strong>Distância conhecida</strong>: use <em>um</em> ângulo de elevação (α) e a distância horizontal (d).<br/>
+          • <strong>Dois ângulos</strong>: use dois ângulos (α e β) medidos em pontos separados por L metros.</p>
+
+          <h2>2) Entradas</h2>
+          <div class="row">
+            <div class="col-6">
+              <label for="h1">Altura do instrumento h₁ (m)</label>
+              <input id="h1" type="number" step="0.01" placeholder="ex.: 1.58" />
+            </div>
+            <div class="col-6" id="distancia_wrap">
+              <label for="d">Distância horizontal d (m)</label>
+              <input id="d" type="number" step="0.01" placeholder="ex.: 12.3" />
+            </div>
+            <div class="col-6">
+              <label for="alpha">Ângulo α (graus)</label>
+              <input id="alpha" type="number" step="0.01" placeholder="ex.: 28.0" />
+            </div>
+            <div class="col-6" id="beta_wrap" style="display:none">
+              <label for="beta">Ângulo β (graus)</label>
+              <input id="beta" type="number" step="0.01" placeholder="ex.: 20.0" />
+            </div>
+            <div class="col-6" id="L_wrap" style="display:none">
+              <label for="L">Separação L entre os pontos (m)</label>
+              <input id="L" type="number" step="0.01" value="1" />
+            </div>
+          </div>
+
+          <div style="margin:14px 0 8px 0" class="hint">
+            Dica: se seu teodolito caseiro mostra o <em>ângulo vertical</em> (θ), converta para elevação por <strong>α = 90° − θ</strong>.
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <div class="col-6">
+              <button id="calc" class="btn btn-primary">Calcular altura</button>
+            </div>
+            <div class="col-6">
+              <button id="reset" class="btn btn-ghost" type="button">Limpar</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2>Resultado</h2>
+          <div id="resBox" class="kpi" aria-live="polite">
+            <div class="val" id="h_out">—</div>
+            <div class="lbl">altura total h (m)</div>
+          </div>
+          <div id="extra" style="margin-top:10px; display:none">
+            <div class="formula" id="steps"></div>
+          </div>
+          <div id="err" class="err" style="margin-top:10px"></div>
+
+          <div class="footer">
+            <div><strong>Fórmulas</strong></div>
+            <div style="margin-top:6px">
+              <div><em>Distância conhecida</em>: h = h₁ + d·tan(α)</div>
+              <div><em>Dois ângulos</em>: h = h₁ + (L·tan(α)·tan(β)) / (tan(α) − tan(β))</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="footer" style="margin-top:10px">
+      Notas: use graus. Evite α ≈ β no método de dois ângulos para reduzir erro numérico; mantenha L ≥ 1 m. 
+    </p>
+  </div>
+
+<script>
+  const byId = (id) => document.getElementById(id);
+  const metodoRadios = document.querySelectorAll('input[name="metodo"]');
+  const distanciaWrap = byId('distancia_wrap');
+  const betaWrap = byId('beta_wrap');
+  const LWrap = byId('L_wrap');
+  const h1El = byId('h1');
+  const dEl = byId('d');
+  const alphaEl = byId('alpha');
+  const betaEl = byId('beta');
+  const LEl = byId('L');
+  const calcBtn = byId('calc');
+  const resetBtn = byId('reset');
+  const hOut = byId('h_out');
+  const steps = byId('steps');
+  const extra = byId('extra');
+  const err = byId('err');
+
+  function setMethodUI(value) {
+    if (value === 'distancia') {
+      distanciaWrap.style.display = '';
+      betaWrap.style.display = 'none';
+      LWrap.style.display = 'none';
+    } else {
+      distanciaWrap.style.display = 'none';
+      betaWrap.style.display = '';
+      LWrap.style.display = '';
+    }
+  }
+
+  metodoRadios.forEach(r => {
+    r.addEventListener('change', () => setMethodUI(r.value));
+  });
+
+  setMethodUI('distancia');
+
+  function toRad(deg) { return deg * Math.PI / 180; }
+
+  function fmt(x) {
+    if (!isFinite(x)) return '—';
+    return (Math.round(x * 100) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function validNum(v) {
+    return typeof v === 'number' && isFinite(v);
+  }
+
+  calcBtn.addEventListener('click', () => {
+    err.textContent = '';
+    extra.style.display = 'none';
+    steps.textContent = '';
+
+    const metodo = document.querySelector('input[name="metodo"]:checked').value;
+    const h1 = parseFloat(h1El.value);
+    const alpha = parseFloat(alphaEl.value);
+
+    if (!validNum(h1) || h1 < 0) {
+      err.textContent = 'Informe uma altura h₁ válida (m).';
+      return;
+    }
+    if (!validNum(alpha)) {
+      err.textContent = 'Informe o ângulo α (graus).';
+      return;
+    }
+    const ta = Math.tan(toRad(alpha));
+
+    if (metodo === 'distancia') {
+      const d = parseFloat(dEl.value);
+      if (!validNum(d) || d <= 0) {
+        err.textContent = 'Informe a distância horizontal d > 0 (m).';
+        return;
+      }
+      const H = d * ta;
+      const h = h1 + H;
+      hOut.textContent = fmt(h);
+      extra.style.display = 'block';
+      steps.innerHTML =
+        `Distância conhecida:<br/>H = d·tan(α) = ${fmt(d)}·tan(${fmt(alpha)}) = ${fmt(H)} m<br/>` +
+        `h = h₁ + H = ${fmt(h1)} + ${fmt(H)} = <strong>${fmt(h)}</strong> m`;
+    } else {
+      const beta = parseFloat(betaEl.value);
+      const L = parseFloat(LEl.value);
+      if (!validNum(beta)) { err.textContent = 'Informe o ângulo β (graus).'; return; }
+      if (!validNum(L) || L <= 0) { err.textContent = 'Informe a separação L > 0 (m).'; return; }
+      const tb = Math.tan(toRad(beta));
+      const denom = (ta - tb);
+      if (Math.abs(denom) < 1e-6) {
+        err.textContent = 'Os ângulos α e β estão muito próximos — escolha pontos com maior separação angular.';
+        return;
+      }
+      const H = (L * ta * tb) / denom;
+      const h = h1 + H;
+      hOut.textContent = fmt(h);
+      extra.style.display = 'block';
+      steps.innerHTML =
+        `Dois ângulos (separação L):<br/>H = (L·tan(α)·tan(β)) / (tan(α) − tan(β))<br/>` +
+        `= (${fmt(L)}·tan(${fmt(alpha)})·tan(${fmt(beta)})) / (tan(${fmt(alpha)}) − tan(${fmt(beta)})) = ${fmt(H)} m<br/>` +
+        `h = h₁ + H = ${fmt(h1)} + ${fmt(H)} = <strong>${fmt(h)}</strong> m`;
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    [h1El, dEl, alphaEl, betaEl, LEl].forEach(el => { if (el) el.value = ''; });
+    LEl.value = 1;
+    hOut.textContent = '—';
+    steps.textContent = '';
+    extra.style.display = 'none';
+    err.textContent = '';
+    document.querySelector('input[value="distancia"]').checked = true;
+    setMethodUI('distancia');
+  });
+</script>
+</body>
+</html>
