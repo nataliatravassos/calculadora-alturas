@@ -6,98 +6,143 @@
   <title>Calculadora de Alturas — Trigonometria</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --card: #121a33;
-      --muted: #8aa0ffcc;
-      --text: #e9edff;
-      --accent: #9ecbff;
-      --accent2: #b7ffea;
-      --error: #ffb4b4;
+      /* Nova Paleta Light */
+      --bg: #f0f2f5;          /* Cinza azulado muito claro */
+      --card: #ffffff;        /* Branco puro para o card */
+      --muted: #64748b;       /* Cinza médio para textos secundários */
+      --text: #1e293b;        /* Azul marinho quase preto para legibilidade */
+      --accent: #2563eb;      /* Azul vibrante para títulos */
+      --accent2: #0891b2;     /* Ciano escuro para o valor do resultado */
+      --error: #e11d48;       /* Vermelho para erros */
+      --border: #e2e8f0;      /* Cor das bordas suave */
+      --input-bg: #f8fafc;    /* Fundo leve para campos de entrada */
     }
+    
     * { box-sizing: border-box; }
+    
     body {
-      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      background: radial-gradient(1200px 800px at 10% -10%, #1a2455 0%, transparent 60%), 
-                  radial-gradient(1000px 600px at 100% 0%, #163a5e 0%, transparent 60%), 
-                  var(--bg);
+      margin: 0; 
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(34, 211, 238, 0.1) 0px, transparent 50%);
       color: var(--text);
       line-height: 1.5;
+      min-height: 100vh;
     }
+    
     .wrap {
       max-width: 860px; margin: 24px auto; padding: 16px;
     }
+    
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px; padding: 18px 16px; backdrop-filter: blur(6px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px; 
+      padding: 24px; 
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
+    
     h1, h2 {
       margin: 8px 0 12px 0;
-      letter-spacing: 0.2px;
+      letter-spacing: -0.02em;
     }
-    h1 { font-size: clamp(1.4rem, 2.2vw + 1rem, 2rem); }
-    h2 { font-size: clamp(1.1rem, 1.8vw + 0.8rem, 1.6rem); color: var(--accent); }
+    
+    h1 { font-size: clamp(1.4rem, 2.2vw + 1rem, 2rem); color: var(--text); }
+    h2 { font-size: clamp(1.1rem, 1.8vw + 0.8rem, 1.4rem); color: var(--accent); border-bottom: 2px solid #eff6ff; display: inline-block; padding-bottom: 2px; }
+    
     p.muted { color: var(--muted); margin-top: 4px; }
+    
     .row {
-      display: grid; gap: 12px;
+      display: grid; gap: 16px;
       grid-template-columns: repeat(12, 1fr);
       align-items: end;
     }
+    
     .col-12 { grid-column: span 12; }
     .col-6  { grid-column: span 12; }
-    .col-4  { grid-column: span 12; }
-    .col-3  { grid-column: span 12; }
+    
     @media (min-width: 680px) {
       .col-6  { grid-column: span 6; }
-      .col-4  { grid-column: span 4; }
-      .col-3  { grid-column: span 3; }
     }
-    label { display: block; font-weight: 600; margin-bottom: 6px; }
+    
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #475569; }
+    
     input, select, button {
-      width: 100%; padding: 12px 10px; border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.13); background: #0e1630; color: var(--text);
+      width: 100%; padding: 12px; border-radius: 10px;
+      border: 1px solid var(--border); 
+      background: var(--input-bg); 
+      color: var(--text);
       outline: none;
+      transition: border-color 0.2s;
     }
-    input::placeholder { color: #9eb0ff80; }
+    
+    input:focus { border-color: var(--accent); background: #fff; }
+    input::placeholder { color: #94a3b8; }
+    
     .seg {
-      display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap;
-      background: #0e1630; padding: 8px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.13);
+      display: inline-flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      background: var(--input-bg); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border);
     }
-    .seg label { font-weight: 500; margin: 0; }
-    .seg input[type="radio"] { width: auto; }
-    .help {
-      font-size: 0.95rem; color: var(--muted);
-    }
+    
+    .seg label { font-weight: 500; margin: 0; color: var(--text); cursor: pointer; }
+    .seg input[type="radio"] { width: auto; cursor: pointer; margin-right: 4px; }
+    
+    .help { font-size: 0.9rem; color: var(--muted); background: #f1f5f9; padding: 10px; border-radius: 8px; margin: 12px 0; }
+    
     .hint {
-      font-size: 0.95rem; color: #cfe1ff; background: rgba(158,203,255,0.08);
-      padding: 8px 10px; border-radius: 10px; border: 1px dashed rgba(255,255,255,0.18);
+      font-size: 0.9rem; color: #1e40af; background: #eff6ff;
+      padding: 10px; border-radius: 10px; border: 1px dashed #bfdbfe;
     }
+    
     .btn {
-      cursor: pointer; font-weight: 700; letter-spacing: 0.2px;
-      transition: transform 0.04s ease, box-shadow 0.2s ease;
+      cursor: pointer; font-weight: 700; 
+      transition: all 0.2s ease;
     }
-    .btn:hover { transform: translateY(-1px); }
-    .btn-primary { background: linear-gradient(90deg, #3b82f6, #22d3ee); border: none; color: #041225; }
-    .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.2); }
+    
+    .btn:active { transform: scale(0.98); }
+    
+    .btn-primary { 
+      background: var(--accent); 
+      border: none; 
+      color: #ffffff; 
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    
+    .btn-ghost { 
+      background: transparent; 
+      border: 1px solid var(--border); 
+      color: var(--muted);
+    }
+    .btn-ghost:hover { background: #f8fafc; color: var(--text); }
+    
     .two-col {
-      display: grid; gap: 18px; grid-template-columns: 1fr; 
+      display: grid; gap: 24px; grid-template-columns: 1fr; 
     }
-    @media (min-width: 900px) { .two-col { grid-template-columns: 1.1fr 0.9fr; } }
+    
+    @media (min-width: 900px) { .two-col { grid-template-columns: 1.2fr 0.8fr; } }
+    
     .kpi {
-      display:flex; gap: 16px; align-items: baseline; flex-wrap: wrap;
-      background: #0e1630; border: 1px solid rgba(255,255,255,0.12);
-      padding: 12px 14px; border-radius: 14px;
+      display: flex; gap: 12px; align-items: center; 
+      background: #f0f9ff; border: 1px solid #bae6fd;
+      padding: 16px; border-radius: 14px;
     }
-    .kpi .val { font-size: clamp(1.4rem, 1.2vw + 1.1rem, 2.2rem); font-weight: 800; color: var(--accent2); }
-    .kpi .lbl { color: var(--muted); font-weight: 600; }
-    .err { color: var(--error); font-weight: 600; }
-    .footer { margin-top: 14px; font-size: 0.92rem; color: #a9b6ffcc; }
+    
+    .kpi .val { font-size: 2rem; font-weight: 800; color: var(--accent2); }
+    .kpi .lbl { color: #0369a1; font-weight: 600; font-size: 0.9rem; }
+    
+    .err { color: var(--error); font-weight: 600; font-size: 0.9rem; }
+    
+    .footer-box { margin-top: 20px; font-size: 0.85rem; color: var(--muted); }
+    
     .formula {
-      font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
-      background: #0b1330; padding: 8px 10px; border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.12);
-      overflow-x: auto;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      background: #f8fafc; padding: 12px; border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -105,7 +150,7 @@
   <div class="wrap">
     <div class="card">
       <h1>Calculadora de Alturas — Trigonometria</h1>
-      <p class="muted">Escolha o método e informe as medidas. O app calcula a altura total <strong>h</strong> do objeto a partir da altura do instrumento <strong>h₁</strong> (olho/teodolito).</p>
+      <p class="muted">Informe as medidas para calcular a altura total <strong>h</strong> do objeto.</p>
 
       <div class="two-col">
         <div>
@@ -114,8 +159,11 @@
             <label><input type="radio" name="metodo" value="distancia" checked /> Distância conhecida</label>
             <label><input type="radio" name="metodo" value="doisangulos" /> Dois ângulos</label>
           </div>
-          <p class="help">• <strong>Distância conhecida</strong>: use <em>um</em> ângulo de elevação (α) e a distância horizontal (d).<br/>
-          • <strong>Dois ângulos</strong>: use dois ângulos (α e β) medidos em pontos separados por L metros.</p>
+          
+          <div class="help">
+            • <strong>Distância conhecida</strong>: use um ângulo (α) e a distância (d).<br/>
+            • <strong>Dois ângulos</strong>: use dois ângulos (α e β) e a separação (L).
+          </div>
 
           <h2>2) Entradas</h2>
           <div class="row">
@@ -136,16 +184,16 @@
               <input id="beta" type="number" step="0.01" placeholder="ex.: 20.0" />
             </div>
             <div class="col-6" id="L_wrap" style="display:none">
-              <label for="L">Separação L entre os pontos (m)</label>
+              <label for="L">Separação L (m)</label>
               <input id="L" type="number" step="0.01" value="1" />
             </div>
           </div>
 
-          <div style="margin:14px 0 8px 0" class="hint">
-            Dica: se seu teodolito caseiro mostra o <em>ângulo vertical</em> (θ), converta para elevação por <strong>α = 90° − θ</strong>.
+          <div style="margin:20px 0" class="hint">
+            <strong>Dica:</strong> Se usar um teodolito caseiro com ângulo vertical (θ), converta: <strong>α = 90° − θ</strong>.
           </div>
 
-          <div class="row" style="margin-top:10px">
+          <div class="row">
             <div class="col-6">
               <button id="calc" class="btn btn-primary">Calcular altura</button>
             </div>
@@ -159,29 +207,32 @@
           <h2>Resultado</h2>
           <div id="resBox" class="kpi" aria-live="polite">
             <div class="val" id="h_out">—</div>
-            <div class="lbl">altura total h (m)</div>
+            <div class="lbl">metros (altura total h)</div>
           </div>
-          <div id="extra" style="margin-top:10px; display:none">
+          
+          <div id="extra" style="margin-top:16px; display:none">
             <div class="formula" id="steps"></div>
           </div>
-          <div id="err" class="err" style="margin-top:10px"></div>
+          
+          <div id="err" class="err" style="margin-top:12px"></div>
 
-          <div class="footer">
-            <div><strong>Fórmulas</strong></div>
-            <div style="margin-top:6px">
-              <div><em>Distância conhecida</em>: h = h₁ + d·tan(α)</div>
-              <div><em>Dois ângulos</em>: h = h₁ + (L·tan(α)·tan(β)) / (tan(α) − tan(β))</div>
+          <div class="footer-box">
+            <div style="margin-bottom:8px"><strong>Fórmulas aplicadas:</strong></div>
+            <div class="formula" style="background: #fff;">
+              • d conhecida: h = h₁ + d·tan(α)<br/>
+              • 2 ângulos: h = h₁ + (L·tanα·tanβ) / (tanα−tanβ)
             </div>
           </div>
         </div>
       </div>
     </div>
-    <p class="footer" style="margin-top:10px">
-      Notas: use graus. Evite α ≈ β no método de dois ângulos para reduzir erro numérico; mantenha L ≥ 1 m. 
+    <p style="text-align:center; font-size: 0.8rem; color: #94a3b8; margin-top: 20px;">
+      Desenvolvido para fins educacionais. Use sempre o mesmo sistema de unidades (metros/graus).
     </p>
   </div>
 
 <script>
+  /* MANTIVE SUA LÓGICA DE JAVASCRIPT ORIGINAL QUE ESTÁ PERFEITA */
   const byId = (id) => document.getElementById(id);
   const metodoRadios = document.querySelectorAll('input[name="metodo"]');
   const distanciaWrap = byId('distancia_wrap');
@@ -258,7 +309,7 @@
       hOut.textContent = fmt(h);
       extra.style.display = 'block';
       steps.innerHTML =
-        `Distância conhecida:<br/>H = d·tan(α) = ${fmt(d)}·tan(${fmt(alpha)}) = ${fmt(H)} m<br/>` +
+        `<strong>Cálculo Passo a Passo:</strong><br/>H = d·tan(α) = ${fmt(d)}·tan(${fmt(alpha)}°) = ${fmt(H)} m<br/>` +
         `h = h₁ + H = ${fmt(h1)} + ${fmt(H)} = <strong>${fmt(h)}</strong> m`;
     } else {
       const beta = parseFloat(betaEl.value);
@@ -276,8 +327,8 @@
       hOut.textContent = fmt(h);
       extra.style.display = 'block';
       steps.innerHTML =
-        `Dois ângulos (separação L):<br/>H = (L·tan(α)·tan(β)) / (tan(α) − tan(β))<br/>` +
-        `= (${fmt(L)}·tan(${fmt(alpha)})·tan(${fmt(beta)})) / (tan(${fmt(alpha)}) − tan(${fmt(beta)})) = ${fmt(H)} m<br/>` +
+        `<strong>Cálculo Passo a Passo:</strong><br/>H = (L·tanα·tanβ) / (tanα − tanβ)<br/>` +
+        `H = (${fmt(L)}·tan${fmt(alpha)}°·tan${fmt(beta)}°) / (tan${fmt(alpha)}° − tan${fmt(beta)}°) = ${fmt(H)} m<br/>` +
         `h = h₁ + H = ${fmt(h1)} + ${fmt(H)} = <strong>${fmt(h)}</strong> m`;
     }
   });
